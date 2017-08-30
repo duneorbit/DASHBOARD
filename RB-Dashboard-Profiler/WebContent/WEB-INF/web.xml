@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+    version="2.4">
+    
+    <display-name>RB Dashboard Profiler</display-name>
+    
+    <context-param> 
+ 		<param-name>contextConfigLocation</param-name> 
+ 		<param-value>/WEB-INF/spring/root-context.xml</param-value> 
+ 	</context-param> 
+    
+    <listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+    
+    <servlet>
+        <servlet-name>ProfileController</servlet-name>
+        <servlet-class>com.jspeedbox.web.servlet.controller.ProfileController</servlet-class>
+        <init-param>
+        	<param-name>rbDomain</param-name>
+        	<param-value>http://iedev317.development.fineos.com</param-value>
+        </init-param>
+        <init-param>
+        	<param-name>rbApiSuffix</param-name>
+        	<param-value>reviewboard/api/</param-value>
+        </init-param>
+        <init-param>
+        	<param-name>nightly</param-name>
+        	<param-value>0 0/10 * * * ?</param-value>
+        </init-param>
+        <init-param>
+        	<param-name>m5</param-name>
+        	<param-value>0 0/5 * * * ?</param-value>
+        </init-param>
+        <init-param>
+        	<param-name>h1</param-name>
+        	<param-value>0 0 0/1 * * ?</param-value>
+        </init-param>
+        <init-param>
+        	<param-name>h2</param-name>
+        	<param-value>0 0 0/2 * * ?</param-value>
+        </init-param>
+        <init-param>
+        	<param-name>h4</param-name>
+        	<param-value>0 0 0/4 * * ?</param-value>
+        </init-param>
+        
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <!-- Processes application requests -->
+	<servlet>
+		<servlet-name>RestDispatcherServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+
+    <servlet-mapping>
+        <servlet-name>ProfileController</servlet-name>
+        <url-pattern>/controller</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+		<servlet-name>RestDispatcherServlet</servlet-name>
+		<url-pattern>/rest/*</url-pattern>
+	</servlet-mapping>
+	
+	<filter>
+		<filter-name>ConfigState</filter-name>
+		<filter-class>com.jspeedbox.web.filter.ConfigState</filter-class>
+	</filter>
+    
+    <filter-mapping>
+    	<filter-name>ConfigState</filter-name>
+    	<url-pattern>/controller</url-pattern>
+    </filter-mapping>
+    
+</web-app>

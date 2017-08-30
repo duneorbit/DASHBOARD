@@ -1,0 +1,12 @@
+.jumbotron {
+	height:150px;	
+}
+.demo {
+  margin:0 auto;
+  width:450px;
+  height:600px;
+}
+
+#demo-autosize {
+  width:80%;
+}
