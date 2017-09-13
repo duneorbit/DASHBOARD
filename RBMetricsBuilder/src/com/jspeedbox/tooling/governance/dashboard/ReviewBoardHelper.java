@@ -10,10 +10,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.ProgammeIncrementDashboard;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.ProgrammeIncrement;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.Sprint;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.TeamDashboard;
+import com.jspeedbox.utils.logging.LoggingUtils;
 
 public class ReviewBoardHelper {
 	
@@ -25,6 +29,8 @@ public class ReviewBoardHelper {
 	
 	private static TeamDashboard teamDashboard = null;
 	private static ProgammeIncrementDashboard piDashboard = null;
+	
+	private static Logger LOGGER_ = LoggerFactory.getLogger(ReviewBoardHelper.class);
 	
 	private static ReviewBoardHelper helper = null;
 	
@@ -53,14 +59,14 @@ public class ReviewBoardHelper {
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", LoggingUtils.CONSTRUCTOR, e);
 		}finally{
 			try {
 				perfReader.close();
 				cosmeticReader.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOGGER_.error("Method[{}] Exception[{}] ", LoggingUtils.CONSTRUCTOR, e);
 			}
 		}
 	}

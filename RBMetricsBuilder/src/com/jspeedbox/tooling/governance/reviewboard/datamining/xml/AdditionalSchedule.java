@@ -12,6 +12,7 @@ public class AdditionalSchedule {
 	
 	private String msg = null;
 	private String pattern = null;
+	private String patternKey = null;
 	private String dashboard = null;
 	private String scheduleName = null;
 	private String lastRunBy = null;
@@ -81,6 +82,26 @@ public class AdditionalSchedule {
 	public void setLastRunBy(String lastRunBy) {
 		this.lastRunBy = lastRunBy;
 	}
+
+	public String getPatternKey() {
+		return patternKey;
+	}
+
+	public void setPatternKey(String patternKey) {
+		this.patternKey = patternKey;
+	}
 	
+	public AdditionalSchedule copy() throws CloneNotSupportedException{
+		AdditionalSchedule additionalSchedule = new AdditionalSchedule();
+		additionalSchedule.setDashboard(this.getDashboard());
+		additionalSchedule.setLastRunBy(this.getLastRunBy());
+		additionalSchedule.setLastRunTime(this.getLastRunTime());
+		additionalSchedule.setMsg(this.getMsg());
+		additionalSchedule.setPattern(this.getPattern());
+		additionalSchedule.setPatternKey(this.getPatternKey());
+		additionalSchedule.setScheduleName(this.getScheduleName());
+		additionalSchedule.setSuccess(this.isSuccess());
+		return additionalSchedule;
+	}
 
 }

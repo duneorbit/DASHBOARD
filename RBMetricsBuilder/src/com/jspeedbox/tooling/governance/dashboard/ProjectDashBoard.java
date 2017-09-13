@@ -164,7 +164,7 @@ public class ProjectDashBoard {
 			Iterator<Entry<String, Reviewer>> reviewers = entry.getValue().getDevelopersStats().entrySet().iterator();
 			while(reviewers.hasNext()){
 				Entry<String, Reviewer> reviewerEntry = reviewers.next();
-				//System.out.println(reviewerEntry.getKey());
+				
 				Totals totals = getTotals(reviewerEntry.getKey());
 				totals.updateTotals(reviewerEntry.getValue());
 			}

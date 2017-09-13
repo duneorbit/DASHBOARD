@@ -12,12 +12,15 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.AdditionalSchedule;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.ScheduledJobConfig;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.ScheduledJobsConfig;
 import com.jspeedbox.utils.IOUtils;
 import com.jspeedbox.utils.XMLUtils;
+import com.jspeedbox.utils.logging.LoggingUtils;
 import com.jspeedbox.web.servlet.Config;
 
 public class ScheduleManager {
@@ -27,6 +30,8 @@ public class ScheduleManager {
 	private static ScheduleManager INSTANCE = null;
 	
 	private static Scheduler sheduler = null;
+	
+	private static Logger LOGGER_ = LoggerFactory.getLogger(ScheduleManager.class);
 	
 	private ScheduleManager() throws SchedulerException{
 		start();
@@ -41,14 +46,14 @@ public class ScheduleManager {
 	}
 	
 	private static void start() throws SchedulerException{
-		System.out.println("Starting Up");
+		LOGGER_.debug(LoggingUtils.buildParamsPlaceHolders("method", "Starting Up"), "start", "scheduler");
 		sheduler = new StdSchedulerFactory().getScheduler();
 		sheduler.start();
 	}
 	
 	public static void shutdown() throws SchedulerException{
 		if(!sheduler.isShutdown()){
-			System.out.println("Shutting Down");
+			LOGGER_.debug(LoggingUtils.buildParamsPlaceHolders("method", "Shutting Down"), "shutdown", "scheduler");
 			sheduler.shutdown();
 		}
 	}
@@ -95,20 +100,33 @@ public class ScheduleManager {
 		addJob(dashboard, jobname, Config.getInstance().getParam(IOUtils.KEY_NIGHTLY));
 	}
 	
+	private static String convertAsNigthly(String scheduleName){
+		scheduleName = scheduleName.replace("ADDITIONAL", "NIGHTLY");
+		return scheduleName;
+	}
+	
 	public static synchronized void addJob(AdditionalSchedule additionalSchedule) throws SchedulerException{
 		ScheduledJobsConfig scheduledJobs = XMLUtils.getScheduledJobs();
 		if(scheduledJobs==null){
 			throw new SchedulerException("no Scheduled Jobs Config XML found");
 		}
 		for(ScheduledJobConfig configJob : scheduledJobs.getJobs()){
-			configJob.setAdditionalSchedule(additionalSchedule);
+			if(configJob.getScheduleName().equals(convertAsNigthly(additionalSchedule.getScheduleName()))){
+				configJob.setAdditionalSchedule(additionalSchedule);
+			}
 		}
 		try{
 			XMLUtils.saveXMLDocument(scheduledJobs, ScheduledJobsConfig.class, IOUtils.getScheduledJobsConfigXML(true));
-			addJob(additionalSchedule.getDashboard(), additionalSchedule.getScheduleName(), additionalSchedule.getPattern());
+			addJob(additionalSchedule.getDashboard(), additionalSchedule.getScheduleName(), 
+					Config.getInstance().getInitParams().get(additionalSchedule.getPattern()));
 		}catch(Exception e){
 			
 		}
+	}
+	
+	public static synchronized void removeJob(AdditionalSchedule additionalSchedule) throws SchedulerException{
+		JobKey jobkey = new JobKey(additionalSchedule.getScheduleName(), additionalSchedule.getDashboard());
+		sheduler.deleteJob(jobkey);
 	}
 
 	public static boolean isSTARTED() {

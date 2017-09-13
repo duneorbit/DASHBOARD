@@ -3,6 +3,7 @@ package com.jspeedbox.tooling.governance.reviewboard.datamining.xml;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
+import com.jspeedbox.utils.DateUtils;
 import com.jspeedbox.utils.IOUtils;
 
 @XmlRootElement
@@ -14,6 +15,7 @@ public class ScheduledJobConfig {
 	private String group = null;
 	private String lastRunBy = null;
 	private String scheduleName = null;
+	private String lastRunTimeFormatted = null;
 
 	private AdditionalSchedule additionalSchedule = null;
 	
@@ -56,6 +58,7 @@ public class ScheduledJobConfig {
 
 	public void setLastRunTime(long lastRunTime) {
 		this.lastRunTime = lastRunTime;
+		setLastRunTimeFormatted(DateUtils.formatSimpleFormatterDateTime(this.lastRunTime));
 	}
 
 	@XmlElement
@@ -72,8 +75,17 @@ public class ScheduledJobConfig {
 		return scheduleName;
 	}
 
+	private void setLastRunTimeFormatted(String lastRunTimeFomatted) {
+		this.lastRunTimeFormatted = lastRunTimeFomatted;
+	}
+
 	private void setScheduleName(String scheduleName) {
 		this.scheduleName = scheduleName;
+	}
+
+	@XmlElement
+	public String getLastRunTimeFormatted() {
+		return lastRunTimeFormatted;
 	}
 	
 	

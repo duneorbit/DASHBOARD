@@ -3,16 +3,21 @@ package com.jspeedbox.utils.schedule;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jspeedbox.tooling.governance.reviewboard.datamining.DataMineThreadProcessor;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.ScheduledJobConfig;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.ScheduledJobsConfig;
 import com.jspeedbox.utils.IOUtils;
 import com.jspeedbox.utils.XMLUtils;
+import com.jspeedbox.utils.logging.LoggingUtils;
 
 public class ScheduledJob implements Job{
 	
 	private static final String SCHEDULER = "Scheduler";
+	
+	private static Logger LOGGER_ = LoggerFactory.getLogger(ScheduledJob.class);
 
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -20,7 +25,7 @@ public class ScheduledJob implements Job{
 		String dashboard = (String)context.getJobDetail().getJobDataMap().get(IOUtils.KEY_DASHBOARD);
 		String jobname = (String)context.getJobDetail().getJobDataMap().get(IOUtils.KEY_JOBNAME);
 		
-		System.out.println("This job is kicking off for dashboard["+dashboard+"]");
+		LOGGER_.debug(LoggingUtils.buildParamsPlaceHolders("method", "This job is kicking off for dashboard"), "execute", dashboard);
 		try{
 			DataMineThreadProcessor.getInstance().init(dashboard);
 			
@@ -41,7 +46,7 @@ public class ScheduledJob implements Job{
 			XMLUtils.saveXMLDocument(jobsConfig, ScheduledJobsConfig.class, IOUtils.getScheduledJobsConfigXML(true));
 			
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "execute", e);
 		}
 	}
 

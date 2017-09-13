@@ -6,11 +6,18 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jspeedbox.utils.logging.LoggingUtils;
+
 public class HttpAdapter {
 	
 	private final static String USER_AGENT = "Mozilla/5.0";
 	
 	private final static String KEY_USER_AGENT = "User-Agent";
+	
+	private static Logger LOGGER_ = LoggerFactory.getLogger(HttpAdapter.class);
 	
 	public HttpAdapter(){
 		
@@ -25,7 +32,8 @@ public class HttpAdapter {
 		
 		int rCode = connection.getResponseCode();
 		
-		//System.out.println("http response code["+rCode+"] thread["+Thread.currentThread().getName()+"]");
+		//LOGGER_.debug(LoggingUtils.buildParamsPlaceHolders("method", "http response code", "thread"), 
+				//"call", rCode, Thread.currentThread().getName());
 		
 		BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 		String line = null;

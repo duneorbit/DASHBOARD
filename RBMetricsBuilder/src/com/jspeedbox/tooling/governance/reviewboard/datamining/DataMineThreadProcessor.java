@@ -8,12 +8,15 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jspeedbox.tooling.governance.reviewboard.DashboardCompiler;
 import com.jspeedbox.tooling.governance.reviewboard.User;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.TeamDashboard;
 import com.jspeedbox.utils.IOUtils;
 import com.jspeedbox.utils.XMLUtils;
+import com.jspeedbox.utils.logging.LoggingUtils;
 
 public class DataMineThreadProcessor {
 	
@@ -28,6 +31,8 @@ public class DataMineThreadProcessor {
 	private static DataMineThreadProcessor INSTANCE_ = null;
 	
 	private static LinkedList<String> QUEUE = new LinkedList<String>();
+	
+	private static Logger LOGGER_ = LoggerFactory.getLogger(DataMineThreadProcessor.class);
 	
 	private DataMineThreadProcessor(){
 		
@@ -84,8 +89,7 @@ public class DataMineThreadProcessor {
 					pool.execute(dataMinerThread);
 				}
 				
-				//wait for threads to become active
-				//TODO make more robust
+				
 				pause();
 				
 				boolean notCompleted = true;
@@ -93,9 +97,7 @@ public class DataMineThreadProcessor {
 					Set<Thread> threads = Thread.getAllStackTraces().keySet();
 					boolean runningThreads = false;
 					for(Thread thread : threads){
-						//System.out.println("thread name["+thread.getName()+"]");
 						if(thread.getName().contains("DataMineService")){
-							//System.out.println("state["+thread.getState().name()+"]");
 							if(thread.getState().name().equals(State.RUNNABLE.toString())){
 								runningThreads = true;
 							}
@@ -104,12 +106,13 @@ public class DataMineThreadProcessor {
 					notCompleted = runningThreads;
 				}
 				
-				System.out.println("................ compiling dashboard");
+				LOGGER_.debug(LoggingUtils.buildParamsPlaceHolders("method", "compiling dashboard"), "start", runningDashboard);
 				//compile dashboard
 				DashboardCompiler compiler = new DashboardCompiler();
 				compiler.runWebCompiler(runningDashboard);
 				
-				System.out.println("compiled");
+				
+				LOGGER_.debug(LoggingUtils.buildParamsPlaceHolders("method", "compiled"), "start", runningDashboard);
 				synchronized(QUEUE){
 					QUEUE.remove(runningDashboard);
 				}
@@ -121,29 +124,26 @@ public class DataMineThreadProcessor {
 			}catch(Exception e){
 				error = true;
 				message = e.getMessage();
-				e.printStackTrace();
+				LOGGER_.error("Method[{}] Exception[{}] ", "start", e);
 			}
 		}
 	}
 	
 	private static void printQueue(){
-		System.out.println("Dashboards left in queue");
+		StringBuffer printQueue = new StringBuffer();
 		synchronized(QUEUE){
 			if(QUEUE.size()>0){
 				for(String dashboard : QUEUE){
-					System.out.println(dashboard);
+					printQueue.append(dashboard).append(" , ");
 				}
-			}else{
-				System.out.println("none");
 			}
 		}
+		LOGGER_.debug(LoggingUtils.buildParamsPlaceHolders("method", "dashboards left in QUEUE"), "printQueue", printQueue.toString());
+		printQueue = null;
 	}
 	
-	@SuppressWarnings("static-access")
 	private void pause() throws InterruptedException{
-		while(ProcessingStatus.getInstance().isStartThreadPoolMonitoring()==false){
-			
-		}
+		while(ProcessingStatus.getInstance().isStartThreadPoolMonitoring()==false){}
 	}
 	
 	public static boolean isError() {

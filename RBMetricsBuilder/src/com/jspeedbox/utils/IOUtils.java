@@ -13,6 +13,8 @@ import javax.servlet.ServletOutputStream;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.jspeedbox.utils.zip.ZipUtil;
@@ -63,6 +65,8 @@ public class IOUtils {
 	private static final DateTimeFormatter PI_SOURCE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd'T'HH:mm:ssZ");
 	private static final SimpleDateFormat DATE_TO_STRING_FORMATTER = new SimpleDateFormat("dd/MM/yyyy");
 	private static final DateFormat DAY_MONTH_YEAR_FORMATTER = new SimpleDateFormat("dd-MM-yyyy");
+	
+	private static Logger LOGGER_ = LoggerFactory.getLogger(IOUtils.class);
 	
 	public static boolean compressFolder(File sourceFolder, File archiveFolder) throws Exception{
 		if(!directoryExists(sourceFolder)){
@@ -148,7 +152,7 @@ public class IOUtils {
 			FileUtils.forceMkdir(dataminedArchive);
 			FileUtils.forceMkdir(timelines);
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "createDashboardRoot", e);
 		}
 		
 		return (directoryExists(root) && directoryExists(data) && 
@@ -190,7 +194,6 @@ public class IOUtils {
 	}
 	
 	public static boolean rbUsersExists(){
-		System.out.println(TMP_DIR);
 		StringBuffer dirPath = new StringBuffer();
 		dirPath.append(TMP_DIR).append("/").append(DIRECTORY_RB_USERS);
 		File rbusers = new File(dirPath.toString());
@@ -211,7 +214,6 @@ public class IOUtils {
 	public static String getRbUsersPath(){
 		StringBuffer dirPath = new StringBuffer();
 		dirPath.append(TMP_DIR).append("/").append(DIRECTORY_RB_USERS);
-		System.out.println(dirPath.toString());
 		return dirPath.toString();
 	}
 	
@@ -327,9 +329,8 @@ public class IOUtils {
 	}
 	
 	public static IOException ioException(String message){
-		System.out.println("----------------- " +getRbUsersXML().getAbsolutePath());
 		IOException e = new IOException(message);
-		e.printStackTrace();
+		LOGGER_.error("Method[{}] Exception[{}] ", "ioException", e);
 		return e;
 	}
 	

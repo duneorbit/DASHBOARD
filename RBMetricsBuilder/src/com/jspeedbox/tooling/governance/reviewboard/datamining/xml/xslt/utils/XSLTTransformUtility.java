@@ -12,7 +12,14 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jspeedbox.utils.logging.LoggingUtils;
+
 public class XSLTTransformUtility {
+	
+	private static Logger LOGGER_ = LoggerFactory.getLogger(XSLTTransformUtility.class);
 	
 	private static InputStream loadTemplate(String template){
 		return XSLTTransformUtility.class.getResourceAsStream(template);
@@ -41,7 +48,7 @@ public class XSLTTransformUtility {
 			transformer.transform(new StreamSource(new StringReader(xml)), new StreamResult(stream));
 			return new String(stream.toByteArray());
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "getReviewersBreakDownSnippet", e);
 		}
 		return "";
 	}
@@ -59,7 +66,7 @@ public class XSLTTransformUtility {
 			transformer.transform(new StreamSource(new StringReader("<CodeReviewSummary/>")), new StreamResult(stream));
 			return new String(stream.toByteArray());
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "getCodeReviewSummarySnippet", e);
 		}
 		return "";
 	}
@@ -73,7 +80,7 @@ public class XSLTTransformUtility {
 			transformer.transform(new StreamSource(new StringReader(xml)), new StreamResult(stream));
 			return new String(stream.toByteArray());
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "getTimeLineTableForDeveloperSnippet", e);
 		}
 		return "";
 	}

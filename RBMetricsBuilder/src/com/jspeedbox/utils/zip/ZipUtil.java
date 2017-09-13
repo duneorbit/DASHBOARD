@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jspeedbox.utils.IOUtils;
 
 public class ZipUtil {
@@ -17,6 +20,8 @@ public class ZipUtil {
     private static String OUTPUT_ZIP_FILE = null;
     private static File SOURCE_FOLDER = null;
     private static File ARCHIVE_FOLDER = null;// SourceFolder path
+    
+    private static Logger LOGGER_ = LoggerFactory.getLogger(ZipUtil.class);
 
     public ZipUtil(File sourceFolder, File archiveFolder) throws Exception {
     	SOURCE_FOLDER = sourceFolder;
@@ -79,7 +84,7 @@ public class ZipUtil {
             try {
                 zos.close();
             } catch (IOException e) {
-                e.printStackTrace();
+            	LOGGER_.error("Method[{}] Exception[{}] ", "zipIt", e);
             }
         }
     }

@@ -16,9 +16,12 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.jspeedbox.tooling.governance.dashboard.SprintSummaryDashBoard;
 import com.jspeedbox.tooling.governance.reviewboard.User;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.DataminedReviewArtefacts;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.ReviewArtefact;
@@ -27,6 +30,7 @@ import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.Revision;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.Users;
 import com.jspeedbox.utils.IOUtils;
 import com.jspeedbox.utils.JSONUtils;
+import com.jspeedbox.utils.logging.LoggingUtils;
 import com.jspeedbox.web.servlet.Config;
 
 public class ReviewBoardDataMineService implements Runnable{
@@ -41,6 +45,8 @@ public class ReviewBoardDataMineService implements Runnable{
 	private List<ReviewSearchCriteria> submittedReviews = new ArrayList<ReviewSearchCriteria>();
 	
 	private HttpAdapter httpAdapter = null;
+	
+	private static Logger LOGGER_ = LoggerFactory.getLogger(ReviewBoardDataMineService.class);
 	
 	public ReviewBoardDataMineService(String user, String runningDashboard){
 		this.user = user;
@@ -57,7 +63,7 @@ public class ReviewBoardDataMineService implements Runnable{
 		try{
 			return httpAdapter.call(url, method);
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "processURL", e);
 		}
 		return new ByteArrayOutputStream();
 	}
@@ -231,10 +237,6 @@ public class ReviewBoardDataMineService implements Runnable{
 	private void dataMineReviews(){
 		for(ReviewSearchCriteria url : submittedReviews){
 			startDate = url.getStartDate();
-			System.out.println("-----------------");
-			System.out.println(baseURL.toString());
-			System.out.println(url.getUrl());
-			System.out.println(Config.getInstance().getParam(IOUtils.KEY_RB_DOMAIN));
 			ByteArrayOutputStream stream = processURL(Config.getInstance().getParam(IOUtils.KEY_RB_DOMAIN)+"/"+url.getUrl(), "GET");
 			Element root = Jsoup.parse(new String(stream.toByteArray()));
 			Elements elements = root.getElementsByTag("ul");
@@ -325,7 +327,8 @@ public class ReviewBoardDataMineService implements Runnable{
 					writer = new BufferedWriter(new FileWriter(file));
 					writer.write(new String(stream.toByteArray()));
 				}else{
-					System.out.println("could not create file");
+					LOGGER_.warn(LoggingUtils.buildParamsPlaceHolders("method", 
+							"could not create file"), "saveXMLDocument", file.getAbsolutePath());
 				}
 			}finally{
 				if(writer!=null){
@@ -334,7 +337,7 @@ public class ReviewBoardDataMineService implements Runnable{
 			}
 			
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "saveXMLDocument", e);
 		}
 	}
 	
@@ -352,7 +355,7 @@ public class ReviewBoardDataMineService implements Runnable{
 
 		Element root = Jsoup.parse(new String(stream.toByteArray()));
 		buildReviewDataMineIndex(root);
-		//TODO check for pagination and process it
+		
 		Elements divElements = root.getElementsByTag("div");
 		Iterator<Element> divItr = divElements.iterator();
 		while(divItr.hasNext()){
@@ -370,7 +373,9 @@ public class ReviewBoardDataMineService implements Runnable{
 		}
 		
 		saveXMLDocument(user);
-		System.out.println("done thread["+Thread.currentThread().getName()+"]");
+		
+		LOGGER_.debug(LoggingUtils.buildParamsPlaceHolders("method", "thread completed"), 
+				"dataMineUser", Thread.currentThread().getName());
 	}
 	
 	public Users mineUsers(){
@@ -419,7 +424,9 @@ public class ReviewBoardDataMineService implements Runnable{
 	}
 
 	public void run() {
-		System.out.println("starting dataminer for["+user+"]");
+		
+		LOGGER_.debug(LoggingUtils.buildParamsPlaceHolders("method", "starting dataminer for"), 
+				"run", user);
 		dataMineUser();
 	}
 

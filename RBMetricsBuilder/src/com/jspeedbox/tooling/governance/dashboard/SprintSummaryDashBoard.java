@@ -6,7 +6,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jspeedbox.tooling.governance.reviewboard.User;
+import com.jspeedbox.utils.logging.LoggingUtils;
 
 public class SprintSummaryDashBoard {
 	
@@ -21,22 +25,19 @@ public class SprintSummaryDashBoard {
 	private Date start = null;
 	private Date end = null;
 	
+	private static Logger LOGGER_ = LoggerFactory.getLogger(SprintSummaryDashBoard.class);
+	
 	public SprintSummaryDashBoard(String spirntName, String instart, String inend) throws Exception{
 		this.spintName = spirntName;
 		for(User user : ReviewBoardHelper.getInstance().getTeamDashboard().getUsers()){
 			developers.put(user.getUsername(), new Totals(user.getUsername()));
 		}
-//		developers.put("hiren", new Totals("hiren"));
-//		developers.put("mark", new Totals("mark"));
-//		developers.put("mohan", new Totals("mohan"));
-//		developers.put("ram", new Totals("ram"));
-//		developers.put("sach", new Totals("sach"));
 		
 		try{
 			start = sourceFormat.parse(instart);
 			end = sourceFormat.parse(inend);
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", LoggingUtils.CONSTRUCTOR, e);
 			throw e;
 		}
 	}

@@ -8,14 +8,19 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.apache.commons.io.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.ProgammeIncrementDashboard;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.ScheduledJobsConfig;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.TeamDashboard;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.TeamDashboards;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.Users;
+import com.jspeedbox.utils.logging.LoggingUtils;
 
 public class XMLUtils {
+	
+	private static Logger LOGGER_ = LoggerFactory.getLogger(XMLUtils.class);
 	
 	@SuppressWarnings("rawtypes")
 	public static void saveXMLDocument(Object xmlObject, Class clazz, File file) throws Exception{
@@ -25,14 +30,14 @@ public class XMLUtils {
 			ByteArrayOutputStream stream = new ByteArrayOutputStream();
 			marshaller.marshal(xmlObject, stream);
 			
-			System.out.println("Saving xml document["+file.getAbsolutePath()+"]");
+			LOGGER_.debug(LoggingUtils.buildParamsPlaceHolders("method", "Saving xml document"), "saveXMLDocument", file.getAbsolutePath());
 			
 			synchronized(file){
 				FileUtils.writeByteArrayToFile(file, stream.toByteArray());
 			}
 			
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "saveXMLDocument", e);
 			throw e;
 		}
 	}
@@ -44,7 +49,7 @@ public class XMLUtils {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			progammeIncrementDashboard = (ProgammeIncrementDashboard)unmarshaller.unmarshal(IOUtils.getPISprintDatesConigXML());
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "unmarshallProgammeIncrementDashboard", e);
 		}
 		return progammeIncrementDashboard;
 	}
@@ -56,7 +61,7 @@ public class XMLUtils {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			users = (Users)unmarshaller.unmarshal(IOUtils.getRbUsersXML());
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "unmarshallUsers", e);
 		}
 		return users;
 	}
@@ -68,7 +73,7 @@ public class XMLUtils {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			dashboards = (TeamDashboards)unmarshaller.unmarshal(IOUtils.getDashBoardsSummaryXml());
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "unmarshallTeamDashboards", e);
 		}
 		return dashboards;
 	}
@@ -112,7 +117,7 @@ public class XMLUtils {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			piSprintDashboard = (ProgammeIncrementDashboard)unmarshaller.unmarshal(IOUtils.getPISprintDatesConigXML());
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "getPISprintDashboard", e);
 		}
 		return piSprintDashboard;
 	}
@@ -124,7 +129,7 @@ public class XMLUtils {
 			Unmarshaller unmarshaller = context.createUnmarshaller();
 			scheduledJobs = (ScheduledJobsConfig)unmarshaller.unmarshal(IOUtils.getScheduledJobsConfigXML(false));
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "getScheduledJobs", e);
 		}
 		return scheduledJobs;
 	}

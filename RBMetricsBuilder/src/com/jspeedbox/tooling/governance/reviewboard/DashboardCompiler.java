@@ -31,6 +31,8 @@ import javax.xml.bind.Unmarshaller;
 import org.apache.commons.io.FileUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -99,6 +101,8 @@ public class DashboardCompiler {
 	private List<User> teamUsers = null;
 	
 	private ProjectDashBoard projectDashBoard = null;
+	
+	private static Logger LOGGER_ = LoggerFactory.getLogger(DashboardCompiler.class);
 	
 	private void initTeamDashBoard(String dashboard){
 		ReviewBoardHelper.getInstance().setTeamDashboard(XMLUtils.getTeamDashboard(dashboard));
@@ -199,7 +203,6 @@ public class DashboardCompiler {
 								reviewer.setMemberOfReviewTeam(true);
 							}
 							if(!isUserComment(comment.getUser().getUsername())){
-								//System.out.println(currProcessingFile);
 								if(currProcessingFile.toLowerCase().contains("v_ranah")){
 									temp = temp.add(new BigDecimal(1));
 								}
@@ -332,8 +335,7 @@ public class DashboardCompiler {
 			template = mapper.readValue(json, RBFiles.class);
 			compileMetrics(template);
 		}catch(Exception e){
-			System.out.println("error file: " + currProcessingFile);
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "processJSON", e);
 		}
 	}
 	
@@ -352,7 +354,7 @@ public class DashboardCompiler {
 						}
 					}
 				}catch(Exception e){
-					e.printStackTrace();
+					LOGGER_.error("Method[{}] Exception[{}] ", "getTotalJSON", e);
 				}
 			}
 		}
@@ -402,13 +404,12 @@ public class DashboardCompiler {
 								
 							}finally{
 								ProcessingStatus.getInstance().getCompileStatus().incComplete();
-								//System.out.println("processed["+ProcessingStatus.getInstance().getCompileStatus().getComplete()+"]");
 							}
 						}
 						reviewID = reviewID + 1;
 					}
 				}catch(Exception e){
-					e.printStackTrace();
+					LOGGER_.error("Method[{}] Exception[{}] ", "startMetricsCapture", e);
 				}
 			}
 		}
@@ -470,7 +471,7 @@ public class DashboardCompiler {
 			FileUtils.writeByteArrayToFile(new File(data.toString()), snippet.getBytes());
 			
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "reviewersBreakDownTable", e);
 		}
 	}
 	
@@ -672,7 +673,7 @@ public class DashboardCompiler {
 				FileUtils.writeByteArrayToFile(IOUtils.getNewFileInTablesDirectory(fileName.toString(), this.dashboard), snippet.getBytes());
 				
 			}catch(Exception e){
-				e.printStackTrace();
+				LOGGER_.error("Method[{}] Exception[{}] ", "timeLineTableForDeveloper", e);
 			}
 		}
 	}
@@ -699,7 +700,7 @@ public class DashboardCompiler {
 			FileUtils.writeByteArrayToFile(IOUtils.getNewFileInTimelinesDirectory(filename, this.dashboard), stream.toByteArray());
 			
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "timelineXMLDocument", e);
 		}
 	}
 	
@@ -850,13 +851,13 @@ public class DashboardCompiler {
 			bufferedWriter = new BufferedWriter(fileWriter);
 			bufferedWriter.write(content);
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "updateFile", e);
 		}finally{
 			try{
 				bufferedWriter.close();
 				fileWriter.close();
 			}catch(Exception e){
-				e.printStackTrace();
+				LOGGER_.error("Method[{}] Exception[{}] ", "updateFile", e);
 			}
 		}
 	}
@@ -874,7 +875,7 @@ public class DashboardCompiler {
 				data.append(line);
 			}
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "readFile", e);
 		}finally{
 			try{
 				if(bufferedReader!=null){
@@ -884,7 +885,7 @@ public class DashboardCompiler {
 					fileReader.close();
 				}
 			}catch(Exception e){
-				e.printStackTrace();
+				LOGGER_.error("Method[{}] Exception[{}] ", "readFile", e);
 			}
 		}
 		return data.toString();
@@ -970,9 +971,7 @@ public class DashboardCompiler {
 				if(developers.get(entries.getValue().getDeveloperName())==null){
 					developers.put(entries.getValue().getDeveloperName(), new BigDecimal(0));
 				}
-//				if(entries.getValue().getDeveloperName().toLowerCase().contains("ranah")){
-//					System.out.println("developer["+entries.getValue().getDeveloperName()+"] amout["+entries.getValue().getDeveloperTotalComments()+"] pi["+entry.getValue().getPiName()+"]");
-//				}
+
 				BigDecimal amount = developers.get(entries.getValue().getDeveloperName());
 				amount = amount.add(new BigDecimal(entries.getValue().getDeveloperTotalComments()));
 				developers.put(entries.getValue().getDeveloperName(), amount);
@@ -1073,7 +1072,6 @@ public class DashboardCompiler {
 		while(itr.hasNext()){
 			Entry<String, PIDashBoard> entry = itr.next();
 			ObjectNode item = JsonNodeFactory.instance.objectNode();
-			System.out.println(entry.getValue().getPiName() + " " + entry.getValue().getStartDate());
 			item.put("sprintName", entry.getValue().getPiName());
 			item.put("comments", entry.getValue().getTotalComments().intValue());
 			jsonArray.add(item);
@@ -1131,12 +1129,6 @@ public class DashboardCompiler {
 		performanceVsCosmeticBarChart(dashboard);
 		contributorReviewersDonut(dashboard);
 		commentsButtonsSummary(dashboard);
-		
-//		System.out.println("total["+temp.intValue()+"] "
-//				+ "jsonFiles["+jsonFiles.intValue()+"] "
-//				+ "filesProcessed["+filesProcessed.intValue()+"] "
-//				+ "allComments["+allCapComments.intValue()+"] "
-//				+ "ownComments["+ownComments.intValue()+"]");
 		
 	}
 	
