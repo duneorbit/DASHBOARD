@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><div class="panel panel-default"><div class="table-responsive"><div class="card sb-card"><div class="card-block"><h3>Reviews created for <Strong>v_jaybhays</Strong> for sprint <Strong>Derry 1</Strong></h3><p>This gives a way to access review timelines, see revisions, see files, see comments, apply/reference key word indicators.</p></div></div><div class="panel-body"><table class="table"><thead><tr><th>
+									#
+								</th><th>
+									Create Date
+								</th><th>
+									Summary
+								</th><th>
+									Revisions
+								</th></tr></thead><tbody><tr><td>1</td><td>03/08/2017</td><td>FAB-6052: Refactor AbsenceCaseEvidenceOverdueRule to use AbsenceActivityFacade</td><td/></tr><tr><td>2</td><td>08/08/2017</td><td>FAB-6106: Create EvidenceResult for MANDATORY only (This is a fix to the previous story.)</td><td/></tr><tr><td>3</td><td>10/08/2017</td><td>FAB-6107: Create EvidenceResult for when it is EmployerChoice</td><td/></tr><tr><td>4</td><td>11/08/2017</td><td>FAB-6163: Implementation for when ReasonElectives set to NotRequired</td><td/></tr><tr><td>5</td><td>11/08/2017</td><td>FAB-6172 - Added JUnits for getReasonElectivesWithManadatoryProofForAbsenceReasonInServiceAgreement() method</td><td/></tr></tbody></table></div></div></div>

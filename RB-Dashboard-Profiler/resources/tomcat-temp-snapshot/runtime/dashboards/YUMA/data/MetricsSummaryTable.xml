@@ -1,0 +1,38 @@
+<tbody>
+<tr>
+<td>Overall comments</td><td>2820</td><td>Total comments made</td>
+</tr>
+<tr>
+<td>Team comments</td><td>714</td><td> Total comments made by TAJ team in response</td>
+</tr>
+<tr>
+<td>Other Team comments</td><td>2106</td><td>Actual total comments from other teams</td>
+</tr>
+<tr>
+<td>Overall Java Comments</td><td>4353</td><td>Total Java comments made</td>
+</tr>
+<tr>
+<td>Overall Data Model Comments</td><td>281</td><td>Total data model comments made</td>
+</tr>
+<tr>
+<td>Overall Team Java Comments</td><td>3866</td><td>Total Taj Java comments</td>
+</tr>
+<tr>
+<td>Overall Team Data Model Comments</td><td>224</td><td>Total Taj data model comments</td>
+</tr>
+<tr>
+<td>Other Team Java comments</td><td>487</td><td>Actual java comments from other teams</td>
+</tr>
+<tr>
+<td>Other Team SQL comments</td><td>57</td><td>Actual data model coments from other teams</td>
+</tr>
+<tr>
+<td>Overall java commits</td><td>2536</td><td>Number of java commits for this time period</td>
+</tr>
+<tr>
+<td>Overall datamodel commits</td><td>193</td><td>Number of datamodel commits for this time period</td>
+</tr>
+<tr>
+<td>Overall commits</td><td>1884</td><td>Number of commits for this time period</td>
+</tr>
+</tbody>

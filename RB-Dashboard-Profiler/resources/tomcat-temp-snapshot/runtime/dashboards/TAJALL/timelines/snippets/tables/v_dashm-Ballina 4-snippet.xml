@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><div class="panel panel-default"><div class="table-responsive"><div class="card sb-card"><div class="card-block"><h3>Reviews created for <Strong>v_dashm</Strong> for sprint <Strong>Ballina 4</Strong></h3><p>This gives a way to access review timelines, see revisions, see files, see comments, apply/reference key word indicators.</p></div></div><div class="panel-body"><table class="table"><thead><tr><th>
+									#
+								</th><th>
+									Create Date
+								</th><th>
+									Summary
+								</th><th>
+									Revisions
+								</th></tr></thead><tbody><tr><td>1</td><td>17/02/2017</td><td>FAB-1781: Adding new enum for feature A04-F04 Wrap up Information</td><td/></tr><tr><td>2</td><td>21/02/2017</td><td>FAB-1729: New fields added into LeaveRequest table, for the feature: A18-F02-Decision Recording On a Leave Request</td><td/></tr><tr><td>3</td><td>21/02/2017</td><td>FAB-1729: New Enums added for the feature: A18-F02-Decision Recording On a Leave Request</td><td/></tr><tr><td>4</td><td>23/02/2017</td><td>FAB-2043: Replace ApplicabilityResult with SelectionResultType</td><td/></tr><tr><td>5</td><td>24/02/2017</td><td>FAB-2052: Replace DecisionResult with AdjudicationResultType</td><td/></tr><tr><td>6</td><td>27/02/2017</td><td>FAB-2051: Delete the enum called EligibilityResult</td><td/></tr><tr><td>7</td><td>27/02/2017</td><td>FAB-2050: Rename EligibilityCriteriaResult to EligibilityResultType</td><td/></tr></tbody></table></div></div></div>

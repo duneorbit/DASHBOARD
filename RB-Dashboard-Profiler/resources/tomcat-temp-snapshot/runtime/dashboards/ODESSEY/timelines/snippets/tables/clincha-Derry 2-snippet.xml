@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><div class="panel panel-default"><div class="table-responsive"><div class="card sb-card"><div class="card-block"><h3>Reviews created for <Strong>clincha</Strong> for sprint <Strong>Derry 2</Strong></h3><p>This gives a way to access review timelines, see revisions, see files, see comments, apply/reference key word indicators.</p></div></div><div class="panel-body"><table class="table"><thead><tr><th>
+									#
+								</th><th>
+									Create Date
+								</th><th>
+									Summary
+								</th><th>
+									Revisions
+								</th></tr></thead><tbody><tr><td>1</td><td>17/08/2017</td><td>FAB-6228:Create 2 separate test suites for Selenium execution on the nightly</td><td/></tr><tr><td>2</td><td>21/08/2017</td><td>FAB-6229:Date details missing from recorded Actual Time Off absence period</td><td/></tr><tr><td>3</td><td>22/08/2017</td><td>FAB-6359:Create Placeholder APIs for step validations in the Actual Time Process</td><td/></tr><tr><td>4</td><td>23/08/2017</td><td>FAB-6368: Junit &amp; Builder class for AbsenceReportingInfo BO</td><td/></tr><tr><td>5</td><td>24/08/2017</td><td>FAB-6362:Create Validators for mandatory validations on Reporting Info</td><td/></tr><tr><td>6</td><td>24/08/2017</td><td>FAB-6368: Junit &amp; Builder class for AbsenceReportingInfo BO</td><td/></tr><tr><td>7</td><td>25/08/2017</td><td>FAB-6417:Fix invalid Selenium XML</td><td/></tr><tr><td>8</td><td>25/08/2017</td><td>FAB-6416:Styling &amp; Layout Cleanup of Reporting Info</td><td/></tr><tr><td>9</td><td>25/08/2017</td><td>FAB-6405:Selenium  to verify auto creation &amp; closure of review task</td><td/></tr><tr><td>10</td><td>28/08/2017</td><td>FAB-6427:Test for Validations on Step 3 - Decision Required</td><td/></tr></tbody></table></div></div></div>
