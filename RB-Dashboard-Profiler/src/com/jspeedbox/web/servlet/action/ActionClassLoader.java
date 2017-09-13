@@ -25,8 +25,7 @@ public class ActionClassLoader {
 			IAction action = (IAction)constructor.newInstance();
 			action.process(request, response);
 		}catch(Exception e){
-			//LOGGER_.error(arg0, arg1);
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "invoke", e);
 		}
 	}
 

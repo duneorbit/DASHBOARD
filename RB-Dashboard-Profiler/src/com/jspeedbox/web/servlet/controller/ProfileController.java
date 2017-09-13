@@ -16,7 +16,10 @@ import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.jspeedbox.utils.logging.LoggingUtils;
 import com.jspeedbox.utils.schedule.ScheduleManager;
 import com.jspeedbox.utils.schedule.ScheduledJob;
 import com.jspeedbox.web.servlet.Config;
@@ -25,17 +28,20 @@ import com.jspeedbox.web.servlet.action.IAction;
 import com.jspeedbox.web.servlet.controller.validator.ConfigValidator;
 
 public class ProfileController extends HttpServlet{
+	
+	private static Logger LOGGER_ = LoggerFactory.getLogger(ProfileController.class);
 
 	@Override
 	public void init() throws ServletException {
 		super.init();
 		
 		try {
+			
 			Config.getInstance().readConfig(this.getServletConfig());
 			ScheduleManager.getInstance();
 		} catch (SchedulerException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "init", e);
 		}
 	}
 
@@ -48,7 +54,7 @@ public class ProfileController extends HttpServlet{
 			ScheduleManager.shutdown();
 		} catch (SchedulerException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "destroy", e);
 		}
 	}
 
@@ -70,7 +76,7 @@ public class ProfileController extends HttpServlet{
 			}else{
 				StringBuffer className = new StringBuffer();
 				className.append(IAction.ACTION_BASE).append(request.getParameter(IAction.PARAM_ACTION));
-				System.out.println("calling action["+className.toString()+"]");
+				LOGGER_.debug(LoggingUtils.buildParamsPlaceHolders("method", "calling action"), "doPost", className.toString());
 				ActionClassLoader classLoader = new ActionClassLoader();
 				classLoader.invoke(className.toString(), request, response);
 			}

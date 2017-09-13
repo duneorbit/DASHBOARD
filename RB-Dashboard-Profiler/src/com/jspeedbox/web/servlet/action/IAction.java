@@ -26,6 +26,7 @@ public interface IAction {
 	public static final String JSP_CREATE_PI_SPRINT_DATES = "./buildPISprintDates.jsp";
 	
 	public static final String TITLE_PROFILER = "RB Dashboard Profiler";
+	public static final String TITLE_LOGIN = "RB Dashboard Login";
 	public static final String TITLE_BUILD_TEAM_DASHBOARD = "Build a Team Dashboard";
 	public static final String TITLE_SCHEDULE_TEAM_DASHBOARD = "Schedule a Team Dashboard";
 	public static final String TITLE_BUILD_PI_SPRINT_DATES = "Build a PI and Sprint Dates";

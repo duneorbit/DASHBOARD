@@ -6,8 +6,13 @@ import java.util.ListIterator;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,6 +34,12 @@ import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.SprintComment
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.TeamDashboard;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.TeamDashboards;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.Users;
+import com.jspeedbox.transaction.Transaction;
+import com.jspeedbox.transaction.TransactionParticipantImpl;
+import com.jspeedbox.transaction.management.TransactionManager;
+import com.jspeedbox.transaction.participants.ScheduleCreateJobParticipant;
+import com.jspeedbox.transaction.participants.ScheduleRemoveJobParticipant;
+import com.jspeedbox.transaction.participants.PersistScheduledJobsConfigParticipant;
 import com.jspeedbox.utils.IOUtils;
 import com.jspeedbox.utils.XMLUtils;
 import com.jspeedbox.utils.json.JSONSyndicate;
@@ -40,6 +51,79 @@ import com.jspeedbox.web.servlet.controller.validator.ValidationException;
 
 @Controller
 public class DashboardsController {
+	
+	private static Logger LOGGER_ = LoggerFactory.getLogger(DashboardsController.class);
+	
+	@Autowired
+	private ServletContext context; 
+	
+	public void setServletContext(ServletContext servletContext) {
+	    this.context = servletContext;
+	}
+	
+	private void bootstrapConfig(HttpServletRequest request){
+		Config.getInstance().setContextPath(context.getContextPath());
+		Config.getInstance().setScheme(request.getScheme());
+		Config.getInstance().setServerName(request.getServerName());
+		Config.getInstance().setPort(String.valueOf(request.getServerPort()));
+	}
+	
+	@RequestMapping(value = RestServiceConstants.GET_ALL_SCHEDULED_JOBS, method = RequestMethod.GET)
+	public @ResponseBody ScheduledJobsConfig getAllSchedules(){
+		return XMLUtils.getScheduledJobs();
+	}
+	
+	@RequestMapping(value = RestServiceConstants.UPDATE_ADDITIONAL_SCHEDULE, method = RequestMethod.POST)
+    public @ResponseBody AdditionalSchedule updateAdditionalJobSchedule(HttpServletRequest request, @RequestBody AdditionalSchedule additionalSchedule) {
+		
+		try{
+			
+			bootstrapConfig(request);
+			
+			File jobsConfig = IOUtils.getScheduledJobsConfigXML(false);
+			
+			TransactionManager.applySessionState(Transaction.KEY_ADDITIONAL_SCHEDULE, additionalSchedule, additionalSchedule.copy());
+			
+			//add remove scheduled job transaction
+			TransactionManager.addTransactionParticipant(new TransactionParticipantImpl(new ScheduleRemoveJobParticipant(additionalSchedule)));
+			//add save xml document transaction
+			TransactionManager.addTransactionParticipant(new TransactionParticipantImpl(
+						new PersistScheduledJobsConfigParticipant(XMLUtils.getScheduledJobs(), ScheduledJobsConfig.class, jobsConfig)));
+			//add create scheduled job transaction
+			TransactionManager.addTransactionParticipant(new TransactionParticipantImpl(new ScheduleCreateJobParticipant(additionalSchedule)));
+			
+			TransactionManager.doTransaction();
+			
+		}catch(Exception e){
+			additionalSchedule.setSuccess(false);
+			additionalSchedule.setMsg(e.getMessage());
+		}finally{
+			TransactionManager.clear();
+		}
+		
+		
+		//add create scheduled job transaction
+		
+//		try{
+//			ScheduleManager.removeJob(additionalSchedule);
+//			ScheduledJobsConfig jobsConfig = XMLUtils.getScheduledJobs();
+//			List<ScheduledJobConfig> jobList = jobsConfig.getJobs();
+//			Iterator<ScheduledJobConfig> safeItr = jobList.iterator();
+//			while(safeItr.hasNext()){
+//				ScheduledJobConfig currJob = safeItr.next();
+//				if(currJob.getAdditionalSchedule().getScheduleName().equals(additionalSchedule.getScheduleName())){
+//					currJob.setAdditionalSchedule(null);
+//				}
+//			}
+//			XMLUtils.saveXMLDocument(jobsConfig, ScheduledJobsConfig.class, IOUtils.getScheduledJobsConfigXML(false));
+//			additionalSchedule = createAdditionalJobSchedule(additionalSchedule);
+//		}catch(Exception e){
+//			additionalSchedule.setSuccess(false);
+//			additionalSchedule.setMsg(e.getMessage());
+//		}
+//		return additionalSchedule;
+		return (AdditionalSchedule)TransactionManager.getSessionState();
+	}
 	
 	@RequestMapping(value = RestServiceConstants.CREATE_ADDITIONAL_SCHEDULE, method = RequestMethod.POST)
     public @ResponseBody AdditionalSchedule createAdditionalJobSchedule(@RequestBody AdditionalSchedule additionalSchedule) {
@@ -83,7 +167,7 @@ public class DashboardsController {
 			compiler.runWebCompiler(dashboard);
 			syndicate.setSuccess(true);
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "recompileDashboard", e);
 			syndicate.setSuccess(false);
 			String msg = "";
 			if(compiler.isCompileError()){
@@ -150,7 +234,7 @@ public class DashboardsController {
 			response.setContentLength(IOUtils.getContentLength(file));
 			IOUtils.copy(file, response.getOutputStream());
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "getIndexingData", e);
 		}
 	}
 	
@@ -162,7 +246,7 @@ public class DashboardsController {
 			response.setContentLength(IOUtils.getContentLength(file));
 			IOUtils.copy(file, response.getOutputStream());
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "getPresentationGraphData", e);
 		}
 	}
 	
@@ -279,7 +363,7 @@ public class DashboardsController {
 			ScheduleManager.addJob(scheduledJob.getGroup(), scheduledJob.getScheduleName());
 			
 		}catch(Exception e){
-			e.printStackTrace();
+			LOGGER_.error("Method[{}] Exception[{}] ", "createTeamDashboard", e);
 		}
 		
 		return teamDashboard;

@@ -67,26 +67,33 @@
 		$("#errorContainer").fadeIn(300).delay(3000).fadeOut(1000);
 	}
 	
-//	function ctp(){
-//		var template = '';
-//		template+='<div class="row">';
-//		template+='	<div class="col-lg-9">';
-//		template+='		<i class="glyphicon glyphicon-user fa-1x"></i>';
-//		template+='		<label>Compile Progress</label>';
-//		template+='	</div>';
-//		template+='</div>';
-//		template+='<div class="row">';
-//		template+='	<div class="col-lg-9">';
-//		template+='		<div class="progress">';
-//		template+='			<div class="progress-bar" role="progressbar" aria-valuenow="0"';
-//		template+='				aria-valuemin="0" aria-valuemax="100" style="width: 0%" id="compileStatus">';
-//		template+='				<span class="sr-only">0% Complete</span>';
-//		template+='			</div>';
-//		template+='		</div>';
-//		template+='	</div>';
-//		template+='</div>';
-//		return template;
-//	}
+	function getOptionTemplate(){
+		var template = '';
+		template += '<td><div class="dropdown">';
+		template += '	<button class="btn btn-primary dropdown-toggle" type="button"';
+		template += '		data-toggle="dropdown" id="additionalScheduleButton">';
+		template += '			Actions <span class="caret"></span>';
+		template += '	</button>';
+		template += '	<ul class="dropdown-menu">';
+		template += '		<li><a href="javascript:scheduleAction(\'Delete\',\'@DBDelete@\');">Delete</a></li>';
+		template += '		<li><a href="javascript:patternKey(\'Suspend\',\'@DBSuspend@\');">Suspend</a></li>';
+		template += '	</ul>';
+		template += '</div></td>';
+		return template;
+	}
+	function getST(){
+		var template = '';
+			template+='<tr>';
+			template+='	<td>@INDEX@</td>';
+			template+='	<td>@NAME@</td>';
+			template+='	<td>@GROUP@</td>';
+			template+='	<td>@SCHEDULED@</td>';
+			template+='	<td>@LASTRUN@</td>';
+			template+='	<td>@LASTRUNBY@</td>';
+			template+='	@OPTIONS@';
+			template+='</tr>';
+		return template;
+	}
 
 	function getThreadProgressTemplate(){
 		var template = '';
