@@ -180,11 +180,16 @@
 						doAction('./profiler.jsp');
 					}
 				},
-				error : function(e) {
-					alert(jqXHR.status + " " + jqXHR.responseText);
+				error : function(xhr, ajaxOptions, thrownError) {
+					//alert(xhr.status + " " + xhr.responseText);
 				},
 				done : function(e) {
 					
+				},
+				statusCode:{
+					403: function(){
+						errorMsg(wrap("You are not Authorized to perform this operation! Seek Administrative Privilages!"));
+					}
 				}
 			});
 		}
