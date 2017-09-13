@@ -1,8 +1,5 @@
 package com.jspeedbox.security.jass;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Map;
 
 import javax.security.auth.Subject;
@@ -54,24 +51,25 @@ public class Login implements LoginModule {
 
 	private boolean isDateRangeValid(String passwordDate) throws LoginException {
 		// Check the time validity
-		SimpleDateFormat dateFormat = new SimpleDateFormat(
-				"yyyy-MM-dd HH-mm-ss");
-
-		try {
-			Date convertedDate = dateFormat.parse(passwordDate);
-
-			long timePasswordDifference = (new java.util.Date().getTime() - convertedDate
-					.getTime()) / (60 * 1000) % 60;
-
-			if (timePasswordDifference < EncodeDecode.MINUTE_PASSWORD_EXPIRES)
-				return true;
-			else
-				return false;
-
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			throw new LoginException("User not valid");
-		}
+//		SimpleDateFormat dateFormat = new SimpleDateFormat(
+//				"yyyy-MM-dd HH-mm-ss");
+//
+//		try {
+//			Date convertedDate = dateFormat.parse(passwordDate);
+//
+//			long timePasswordDifference = (new java.util.Date().getTime() - convertedDate
+//					.getTime()) / (60 * 1000) % 60;
+//
+//			if (timePasswordDifference < EncodeDecode.MINUTE_PASSWORD_EXPIRES)
+//				return true;
+//			else
+//				return false;
+//
+//		} catch (ParseException e) {
+//			// TODO Auto-generated catch block
+//			throw new LoginException("User not valid");
+//		}
+		return true;
 	}
 
 	@Override
