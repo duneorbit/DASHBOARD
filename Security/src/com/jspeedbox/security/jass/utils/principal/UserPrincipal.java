@@ -3,6 +3,8 @@ package com.jspeedbox.security.jass.utils.principal;
 import java.security.Principal;
 import java.util.Date;
 
+import com.jspeedbox.security.domain.user.AuthenticatedUser;
+
 public class UserPrincipal implements Principal, java.io.Serializable  {
 
 	/**
@@ -12,32 +14,27 @@ public class UserPrincipal implements Principal, java.io.Serializable  {
 	/**
 	 * 
 	 */
-	private String name 	= null;
-	private Date loginTime 	= null;
-	private String role		= null;
+	private AuthenticatedUser user = null;
 	
-	public UserPrincipal(String name) {
-		if (name == null)
-		    throw new NullPointerException("illegal null input");
-		this.name = name;
-		this.loginTime = new Date();
+	public UserPrincipal(AuthenticatedUser user) {
+		this.user = user;
 	}
 
 	@Override
 	public String getName() {
-		return name;
+		return this.user.getUsername();
 	}
 
 	public Date getLoginTime() {
-		return loginTime;
+		return this.user.getLastlogonTime();
 	}
 
 	public String getRole() {
-		return role;
+		return this.user.getRole();
 	}
 
 	public void setRole(String role) {
-		this.role = role;
+		this.user.setRole(role);
 	}
 	
 }

@@ -12,7 +12,7 @@ import com.jspeedbox.security.jass.utils.principal.UserPrincipal;
 @Controller
 public class SecureController {
 
-	@RequestMapping(value="/admin/index")
+	@RequestMapping(value="/dashboards/team/update")
 	//public String getOrder(ModelMap model, java.security.Principal principal) {
 	public String getAdmin(ModelMap model) {
 
@@ -23,21 +23,21 @@ public class SecureController {
 		userPrincipal.setRole(jaasGrantedAuthority.getAuthority());
 		
 		model.addAttribute("userPrincipal", userPrincipal);
-		return "admin/index";
+		return "/dashboards/team/update";
 	}
 	
-	@RequestMapping(value="/customer/index")
-	//public String getOrder(ModelMap model, java.security.Principal principal) {
-	public String getCustomer(ModelMap model) {
-
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		JaasGrantedAuthority jaasGrantedAuthority = (JaasGrantedAuthority)(auth.getAuthorities().toArray()[0]);
-		
-		UserPrincipal userPrincipal = (UserPrincipal)jaasGrantedAuthority.getPrincipal();
-		userPrincipal.setRole(jaasGrantedAuthority.getAuthority());
-		
-		model.addAttribute("userPrincipal", userPrincipal);
-		return "customer/index";
-	}
+//	@RequestMapping(value="/customer/index")
+//	//public String getOrder(ModelMap model, java.security.Principal principal) {
+//	public String getCustomer(ModelMap model) {
+//
+//		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//		JaasGrantedAuthority jaasGrantedAuthority = (JaasGrantedAuthority)(auth.getAuthorities().toArray()[0]);
+//		
+//		UserPrincipal userPrincipal = (UserPrincipal)jaasGrantedAuthority.getPrincipal();
+//		userPrincipal.setRole(jaasGrantedAuthority.getAuthority());
+//		
+//		model.addAttribute("userPrincipal", userPrincipal);
+//		return "customer/index";
+//	}
 
 }

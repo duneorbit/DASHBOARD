@@ -1,4 +1,4 @@
-package com.jspeedbox.security.jass;
+package com.jspeedbox.security.jass.auth;
 
 import java.security.Principal;
 import java.util.Collections;
