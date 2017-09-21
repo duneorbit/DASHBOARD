@@ -8,6 +8,9 @@
         <dependent-module archiveName="Security.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/Security/Security">
             <dependency-type>uses</dependency-type>
         </dependent-module>
+        <dependent-module archiveName="ClientServices.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/ClientServices/ClientServices">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
         <property name="context-root" value="RB-Dashboard-Profiler"/>
         <property name="java-output-path" value="/RB-Dashboard-Profiler/build/classes"/>
     </wb-module>

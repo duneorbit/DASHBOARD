@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jspeedbox.security.authorization.AuthorizationController;
+import com.jspeedbox.security.authorization.AuthorizationException;
 import com.jspeedbox.tooling.governance.reviewboard.DashboardCompiler;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.ProcessingStatus;
 import com.jspeedbox.tooling.governance.reviewboard.datamining.Status;
@@ -37,9 +39,9 @@ import com.jspeedbox.tooling.governance.reviewboard.datamining.xml.Users;
 import com.jspeedbox.transaction.Transaction;
 import com.jspeedbox.transaction.TransactionParticipantImpl;
 import com.jspeedbox.transaction.management.TransactionManager;
+import com.jspeedbox.transaction.participants.PersistScheduledJobsConfigParticipant;
 import com.jspeedbox.transaction.participants.ScheduleCreateJobParticipant;
 import com.jspeedbox.transaction.participants.ScheduleRemoveJobParticipant;
-import com.jspeedbox.transaction.participants.PersistScheduledJobsConfigParticipant;
 import com.jspeedbox.utils.IOUtils;
 import com.jspeedbox.utils.XMLUtils;
 import com.jspeedbox.utils.json.JSONSyndicate;
@@ -372,20 +374,28 @@ public class DashboardsController {
 	@RequestMapping(value = RestServiceConstants.UPDATE_TEAM_DASHBOARD, method = RequestMethod.POST)
     public @ResponseBody TeamDashboard updateTeamDashboard(@RequestBody TeamDashboard teamDashboard) {
 		
-		TeamDashboards dashboards = XMLUtils.unmarshallTeamDashboards();
-		ListIterator<TeamDashboard> dashboardsItr = dashboards.getDashboards().listIterator();
-		
-		while(dashboardsItr.hasNext()){
-			if(dashboardsItr.next().getDashboardName().equalsIgnoreCase(teamDashboard.getDashboardName())){
-				dashboardsItr.remove();
-			}
-		}
-		dashboards.getDashboards().add(teamDashboard);
-		
 		try{
-			XMLUtils.saveXMLDocument(dashboards, TeamDashboards.class, IOUtils.getDashBoardsSummaryXml());
-			teamDashboard.setSuccess(true);
-		}catch(Exception e){
+			if(AuthorizationController.doPrivileged(new Object(){})){
+			
+				TeamDashboards dashboards = XMLUtils.unmarshallTeamDashboards();
+				ListIterator<TeamDashboard> dashboardsItr = dashboards.getDashboards().listIterator();
+				
+				while(dashboardsItr.hasNext()){
+					if(dashboardsItr.next().getDashboardName().equalsIgnoreCase(teamDashboard.getDashboardName())){
+						dashboardsItr.remove();
+					}
+				}
+				dashboards.getDashboards().add(teamDashboard);
+				
+				try{
+					XMLUtils.saveXMLDocument(dashboards, TeamDashboards.class, IOUtils.getDashBoardsSummaryXml());
+					teamDashboard.setSuccess(true);
+				}catch(Exception e){
+					teamDashboard.setSuccess(false);
+					teamDashboard.setMsg(e.getMessage());
+				}
+			}
+		}catch(AuthorizationException e){
 			teamDashboard.setSuccess(false);
 			teamDashboard.setMsg(e.getMessage());
 		}

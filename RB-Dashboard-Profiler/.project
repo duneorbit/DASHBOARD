@@ -5,6 +5,7 @@
 	<projects>
 		<project>RBMetricsBuilder</project>
 		<project>Security</project>
+		<project>ClientServices</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

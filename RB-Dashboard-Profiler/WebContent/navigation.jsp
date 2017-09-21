@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <%@ page import="com.jspeedbox.web.servlet.action.IAction"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 	<%
 		String dashboard = request.getParameter(IAction.PARAM_DASHBOARD);
@@ -42,6 +43,7 @@
 					<li><a href="#" onclick="javascript:doAction('<%=IAction.ACTION_USER_BUILD_ACTION%>');">Update Users <span class="sr-only">(current)</span></a></li>
 					<li><a href="#" onclick="javascript:doAction('<%=IAction.JSP_BUILD_TEAM_SAHBOARD%>');">Create Team Dashboard</a></li>
 					<li><a href="#" onclick="javascript:doAction('<%=IAction.JSP_CREATE_PI_SPRINT_DATES%>');">Modify/Add Sprint Dates</a></li>
+					<li><a href='<c:url value="/j_spring_security_logout" />'>Logout</a></li>
 				</ul>
 			</div>
 		</div>
